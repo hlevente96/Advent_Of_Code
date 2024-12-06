@@ -1,6 +1,6 @@
-from day1_input import input_data
+from inputs import input_day1
 
-rows = input_data.strip().split("\n")
+rows = input_day1.strip().split("\n")
 
 column1 = []
 column2 = []

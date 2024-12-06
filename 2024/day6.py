@@ -1,5 +1,6 @@
-from day6_input import input_data_1
-paths = [row for row in input_data_1.strip().split("\n")]
+from inputs import input_day6
+
+paths = [row for row in input_day6.strip().split("\n")]
 columns = len(paths[0])
 rows = len(paths)
 DIRECTIONS = [(-1,0), (0,1), (1,0), (0,-1)]

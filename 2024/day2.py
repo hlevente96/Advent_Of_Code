@@ -1,6 +1,6 @@
-from day2_input import input_data
+from inputs import input_day2
 
-rows = [list(map(int, row.split())) for row in input_data.strip().split("\n")]
+rows = [list(map(int, row.split())) for row in input_day2.strip().split("\n")]
 
 def is_safe(row: list) -> bool:
     inc = all(1 <= row[i + 1] - row[i] <= 3 for i in range(len(row) - 1))

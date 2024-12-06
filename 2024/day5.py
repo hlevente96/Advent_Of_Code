@@ -1,7 +1,7 @@
-from day5_input import input_data_1, input_data_2
+from inputs import input_day5, input_day5_2
 
-rules = [tuple(map(int, row.split("|"))) for row in input_data_1.strip().split("\n")]
-data = [list(map(int, row.split(","))) for row in input_data_2.strip().split("\n")]
+rules = [tuple(map(int, row.split("|"))) for row in input_day5.strip().split("\n")]
+data = [list(map(int, row.split(","))) for row in input_day5_2.strip().split("\n")]
 
 correct_rows, invalid_rows = [], []
 for check_row in data:

@@ -1,6 +1,6 @@
-from day4_input import input_data
+from inputs import input_day4
 
-data = [row for row in input_data.strip().split("\n")]
+data = [row for row in input_day4.strip().split("\n")]
 rows_number = len(data)
 columns_number = len(data[0])
 target = "XMAS"
