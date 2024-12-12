@@ -1,60 +1,62 @@
 from inputs import input_day12
-rows = [row for row in input_day12.strip().split("\n")]
 
-garden_width = len(rows[0])
-garden_height = len(rows)
-
+flower_map = [row for row in input_day12.strip().split("\n")]
+garden_width = len(flower_map[0])
+garden_height = len(flower_map)
 garden = [[[0,0] for _ in range(garden_width)] for _ in range(garden_height)]
-GROUP = 0
-directions = [(1,0),(0,1),(-1,0),(0,-1)]
+DIRECTIONS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 
-def propagate_group(x, y, group, flower):
-    stack = [(x, y)]
-    while stack:
-        cx, cy = stack.pop()
-        if garden[cy][cx][0] == group:
-            continue
-        garden[cy][cx][0] = group
-        for direction in directions:
-            newx, newy = cx + direction[0], cy + direction[1]
-            if 0 <= newy < garden_height and 0 <= newx < garden_width:
-                if rows[newy][newx] == flower and garden[newy][newx][0] == 0:
-                    stack.append((newx, newy))
+def creating_groups(flowers: list[list[str]], garden_map: list[list[list[int]]]) -> list[list[list[int]]]:
+    group = 0
+    for y in range(garden_height):
+        for x in range(garden_width):
+            if garden_map[y][x][0] == 0:
+                group +=1
+            flower = flowers[y][x]
+            stack = [(x,y)]
+            while stack:
+                current_x, current_y = stack.pop()
+                if garden_map[current_y][current_x][0] == 0:
+                    garden_map[current_y][current_x][0] = group
+                    for direction in DIRECTIONS:
+                        new_x, new_y = current_x + direction[0], current_y + direction[1]
+                        if 0 <= new_y < garden_height and 0 <= new_x < garden_width:
+                            if flowers[new_y][new_x] == flower and garden_map[new_y][new_x][0] == 0:
+                                stack.append((new_x,new_y))
+    return garden_map
 
-for y in range(garden_height):
-    for x in range(garden_width):
-        fences = 0
-        group = 0
-        flower = rows[y][x]
-        for direction in directions:
-            new_x = x+direction[0]
-            new_y = y+direction[1]
-            if 0 <= new_y < garden_height and 0 <= new_x < garden_width:
-                neighbour = rows[new_y][new_x]
-                if neighbour != flower:
+def counting_fences(flowers: list[list[str]], garden_map: list[list[list[int]]]) -> list[list[list[int]]]:
+    for y in range(garden_height):
+        for x in range(garden_width):
+            fences = 0
+            flower = flowers[y][x]
+            for direction in DIRECTIONS:
+                new_x, new_y = x + direction[0], y + direction[1]
+                if 0 <= new_y < garden_height and 0 <= new_x < garden_width:
+                    neighbour = flowers[new_y][new_x]
+                    if neighbour != flower:
+                        fences += 1
+                else:
                     fences += 1
-                elif garden[new_y][new_x][0] != 0:
-                    group = garden[new_y][new_x][0]
-            else:
-                fences += 1
-        if group == 0:
-            GROUP += 1
-            group = GROUP
-            propagate_group(x, y, group, flower)
+            garden_map[y][x][1] = fences
+    return garden_map
 
-        garden[y][x] = [group, fences]
+def summing(garden_map: list[list[list[int]]]) -> int:
+    garden_dict = {}
+    for y in range(garden_height):
+        for x in range(garden_width):
+            group = garden_map[y][x][0]
+            fences = garden_map[y][x][1]
+            if group not in garden_dict.keys():
+                garden_dict[group] = {"occurrences": 0, "fences": 0}
+            garden_dict[group]["occurrences"] += 1
+            garden_dict[group]["fences"] += fences
+    total_per_pack = [v["occurrences"] * v["fences"] for k, v in garden_dict.items()]
+    total = sum(total_per_pack)
+    return total
 
-garden_dict = {}
-for y in range(len(garden)):
-    for x in range(len(garden[0])):
-        group = garden[y][x][0]
-        fences = garden[y][x][1]
-        if group not in garden_dict.keys():
-            garden_dict[group] = {"occurrences": 0, "fences": 0}
-        garden_dict[group]["occurrences"] += 1
-        garden_dict[group]["fences"] += fences
-
-summing = [v["occurrences"]*v["fences"] for k, v in garden_dict.items()]
-total = sum(summing)
-print(total)
+garden = creating_groups(flower_map, garden)
+garden = counting_fences(flower_map, garden)
+result = summing(garden)
+print(result)
 
